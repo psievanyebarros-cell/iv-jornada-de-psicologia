@@ -126,7 +126,7 @@ function Painel() {
             })}
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <label className="flex items-center gap-2 text-sm text-muted-foreground">
+            <label className="flex items-center gap-2 whitespace-nowrap text-sm text-muted-foreground">
               <Switch checked={soPendentes} onCheckedChange={setSoPendentes} /> Só pendentes
             </label>
             <div className="relative sm:w-72">
