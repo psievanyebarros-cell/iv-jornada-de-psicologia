@@ -22,7 +22,7 @@ export const Route = createFileRoute("/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(avaliadoresQuery()),
   component: Inicio,
   errorComponent: ({ error }) => (
-    <div role="alert" className="p-10 text-center text-destructive">{error.message}</div>
+    <div role="alert" className="p-10 text-center text-destructive">{error instanceof Error ? error.message : "Erro ao carregar."}</div>
   ),
   notFoundComponent: () => <div className="p-10 text-center">Nada encontrado.</div>,
 });

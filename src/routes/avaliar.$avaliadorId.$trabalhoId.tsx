@@ -31,7 +31,7 @@ export const Route = createFileRoute("/avaliar/$avaliadorId/$trabalhoId")({
   },
   component: Ficha,
   errorComponent: ({ error }) => (
-    <div role="alert" className="p-10 text-center text-destructive">{error.message}</div>
+    <div role="alert" className="p-10 text-center text-destructive">{error instanceof Error ? error.message : "Erro ao carregar."}</div>
   ),
   notFoundComponent: () => (
     <div className="p-10 text-center">
@@ -66,7 +66,7 @@ function Ficha() {
   const numeros = CRITERIOS.map((c) => Number(notas[c.key].replace(",", ".")));
   const completas = CRITERIOS.every((c) => notas[c.key] !== "");
   const media = completas
-    ? mediaAvaliacao({ nota_conteudo: numeros[0], nota_apresentacao: numeros[1], nota_dominio: numeros[2] })
+    ? mediaAvaliacao({ nota_conteudo: numeros[0] ?? 0, nota_apresentacao: numeros[1] ?? 0, nota_dominio: numeros[2] ?? 0 })
     : null;
 
   function setNota(k: CriterioKey, v: string) {
@@ -167,7 +167,7 @@ function Ficha() {
           </div>
 
           {CRITERIOS.map((c, i) => {
-            const valor = numeros[i];
+            const valor = numeros[i] ?? NaN;
             const err = erros[c.key];
             return (
               <div
@@ -204,7 +204,7 @@ function Ficha() {
                   max={10}
                   step={0.5}
                   value={[Number.isFinite(valor) && notas[c.key] !== "" ? Math.min(10, Math.max(0, valor)) : 0]}
-                  onValueChange={([v]) => setNota(c.key, String(v))}
+                  onValueChange={([v]) => setNota(c.key, String(v ?? 0))}
                   aria-label={`Nota de ${c.label}`}
                 />
                 <div className="mt-2 flex justify-between text-xs text-muted-foreground">

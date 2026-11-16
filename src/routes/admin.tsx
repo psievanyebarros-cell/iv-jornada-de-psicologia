@@ -431,7 +431,10 @@ function NovoAvaliador({ senha }: { senha: string }) {
       className="rounded-2xl border bg-card p-5 shadow-card"
       onSubmit={async (e) => {
         e.preventDefault();
-        if (nome.trim().length < 3) return toast.error("Informe o nome completo.");
+        if (nome.trim().length < 3) {
+          toast.error("Informe o nome completo.");
+          return;
+        }
         setSalvando(true);
         try {
           await add({ data: { senha, nome } });
@@ -472,7 +475,8 @@ function NovoTrabalho({ senha }: { senha: string }) {
       onSubmit={async (e) => {
         e.preventDefault();
         if (!f.codigo_trabalho.trim() || f.titulo.trim().length < 3 || f.autor_principal.trim().length < 3 || f.local_apresentacao.trim().length < 2) {
-          return toast.error("Preencha todos os campos.");
+          toast.error("Preencha todos os campos.");
+          return;
         }
         setSalvando(true);
         try {

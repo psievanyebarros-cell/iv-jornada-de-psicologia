@@ -32,8 +32,8 @@ describe("média", () => {
       { ...base, id: "1", nota_conteudo: 10, nota_apresentacao: 10, nota_dominio: 10 },
       { ...base, id: "2", nota_conteudo: 6, nota_apresentacao: 6, nota_dominio: 6 },
     ]);
-    expect(r.total_avaliacoes).toBe(2);
-    expect(r.media_final).toBe(8);
+    expect(r?.total_avaliacoes).toBe(2);
+    expect(r?.media_final).toBe(8);
   });
 });
 
