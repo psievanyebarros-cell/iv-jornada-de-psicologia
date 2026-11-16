@@ -28,3 +28,9 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+
+- All database access goes through `createServerFn` in `src/lib/jornada.functions.ts`; `avaliacoes` has no client RLS policies, so only server code (service role) reads/writes it — keeps scores private while evaluators have no login.
+- Admin server functions verify a shared password from the `ADMIN_PASSWORD` secret on every call — the event has no user accounts.
+- Score rules and CSV building live as pure functions in `src/lib/avaliacao.ts` with tests next to them — so rules stay testable without the backend.

@@ -10,33 +10,77 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AvaliadorAvaliadorIdRouteImport } from './routes/avaliador.$avaliadorId'
+import { Route as AvaliarAvaliadorIdTrabalhoIdRouteImport } from './routes/avaliar.$avaliadorId.$trabalhoId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AvaliadorAvaliadorIdRoute = AvaliadorAvaliadorIdRouteImport.update({
+  id: '/avaliador/$avaliadorId',
+  path: '/avaliador/$avaliadorId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AvaliarAvaliadorIdTrabalhoIdRoute =
+  AvaliarAvaliadorIdTrabalhoIdRouteImport.update({
+    id: '/avaliar/$avaliadorId/$trabalhoId',
+    path: '/avaliar/$avaliadorId/$trabalhoId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/avaliador/$avaliadorId': typeof AvaliadorAvaliadorIdRoute
+  '/avaliar/$avaliadorId/$trabalhoId': typeof AvaliarAvaliadorIdTrabalhoIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/avaliador/$avaliadorId': typeof AvaliadorAvaliadorIdRoute
+  '/avaliar/$avaliadorId/$trabalhoId': typeof AvaliarAvaliadorIdTrabalhoIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/avaliador/$avaliadorId': typeof AvaliadorAvaliadorIdRoute
+  '/avaliar/$avaliadorId/$trabalhoId': typeof AvaliarAvaliadorIdTrabalhoIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/avaliador/$avaliadorId'
+    | '/avaliar/$avaliadorId/$trabalhoId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin'
+    | '/avaliador/$avaliadorId'
+    | '/avaliar/$avaliadorId/$trabalhoId'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/avaliador/$avaliadorId'
+    | '/avaliar/$avaliadorId/$trabalhoId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  AvaliadorAvaliadorIdRoute: typeof AvaliadorAvaliadorIdRoute
+  AvaliarAvaliadorIdTrabalhoIdRoute: typeof AvaliarAvaliadorIdTrabalhoIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +92,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/avaliador/$avaliadorId': {
+      id: '/avaliador/$avaliadorId'
+      path: '/avaliador/$avaliadorId'
+      fullPath: '/avaliador/$avaliadorId'
+      preLoaderRoute: typeof AvaliadorAvaliadorIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/avaliar/$avaliadorId/$trabalhoId': {
+      id: '/avaliar/$avaliadorId/$trabalhoId'
+      path: '/avaliar/$avaliadorId/$trabalhoId'
+      fullPath: '/avaliar/$avaliadorId/$trabalhoId'
+      preLoaderRoute: typeof AvaliarAvaliadorIdTrabalhoIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  AvaliadorAvaliadorIdRoute: AvaliadorAvaliadorIdRoute,
+  AvaliarAvaliadorIdTrabalhoIdRoute: AvaliarAvaliadorIdTrabalhoIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
