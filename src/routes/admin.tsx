@@ -643,8 +643,8 @@ function EditarAvaliacaoModal({
 }: {
   senha: string;
   avaliacao: Avaliacao | null;
-  trabalho?: Trabalho;
-  nomeAvaliadorOriginal?: string;
+  trabalho?: Trabalho | undefined;
+  nomeAvaliadorOriginal?: string | undefined;
   aberto: boolean;
   onFechar: () => void;
   onSalvo: () => void;

@@ -76,19 +76,19 @@ export type Trabalho = {
   autor_principal: string;
   categoria: string;
   local_apresentacao: string;
-  grupo_numero?: number;
-  grupo_tema?: string;
-  data_sessao?: string;
-  sala?: string;
-  horario?: string;
-  autores_completos?: string;
+  grupo_numero?: number | undefined;
+  grupo_tema?: string | undefined;
+  data_sessao?: string | undefined;
+  sala?: string | undefined;
+  horario?: string | undefined;
+  autores_completos?: string | undefined;
 };
 
 export type Avaliacao = {
   id: string;
   avaliador_id: string;
   trabalho_id: string;
-  nome_avaliador?: string;
+  nome_avaliador?: string | undefined;
   nota_conteudo: number;
   nota_apresentacao: number;
   nota_dominio: number;
@@ -149,7 +149,7 @@ export function desempacotarAvaliacao(av: Avaliacao | null | undefined): {
   c3: string;
   c4: string;
   parecer: string;
-  nomeAvaliador?: string;
+  nomeAvaliador?: string | undefined;
 } {
   if (!av) return { c1: "", c2: "", c3: "", c4: "", parecer: "" };
   let parecer = av.observacoes_parecer ?? "";
@@ -161,7 +161,7 @@ export function desempacotarAvaliacao(av: Avaliacao | null | undefined): {
 
   const matchNome = parecer.match(/\[Avaliador:\s*([^\]]+)\]/);
   if (matchNome) {
-    nomeAvaliador = matchNome[1].trim();
+    nomeAvaliador = (matchNome[1] ?? "").trim();
     parecer = parecer.replace(/\[Avaliador:\s*([^\]]+)\]/, "").trim();
   }
 
@@ -169,10 +169,10 @@ export function desempacotarAvaliacao(av: Avaliacao | null | undefined): {
     /\[Critérios:\s*C1:\s*([\d,\.]+)\s*\|\s*C2:\s*([\d,\.]+)\s*\|\s*C3:\s*([\d,\.]+)\s*\|\s*C4:\s*([\d,\.]+)\]/
   );
   if (matchC) {
-    c1 = matchC[1].replace(",", ".");
-    c2 = matchC[2].replace(",", ".");
-    c3 = matchC[3].replace(",", ".");
-    c4 = matchC[4].replace(",", ".");
+    c1 = (matchC[1] ?? "").replace(",", ".");
+    c2 = (matchC[2] ?? "").replace(",", ".");
+    c3 = (matchC[3] ?? "").replace(",", ".");
+    c4 = (matchC[4] ?? "").replace(",", ".");
     parecer = parecer.replace(/\[Critérios:[^\]]+\]/, "").trim();
   }
 
