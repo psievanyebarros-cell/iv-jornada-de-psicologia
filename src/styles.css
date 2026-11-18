@@ -8,7 +8,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: "Bodoni Moda", "Didot", Georgia, serif;
+  --font-display: "Playfair Display", "Didot", Georgia, serif;
   --font-sans: "Sora", ui-sans-serif, system-ui, sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);

@@ -4,14 +4,14 @@ import { carregarFicha, carregarPainel, listarAvaliadores } from "./jornada.func
 export const avaliadoresQuery = () =>
   queryOptions({ queryKey: ["avaliadores"], queryFn: () => listarAvaliadores() });
 
-export const painelQuery = (avaliadorId: string) =>
+export const painelQuery = (avaliadorId: string, nome?: string) =>
   queryOptions({
-    queryKey: ["painel", avaliadorId],
-    queryFn: () => carregarPainel({ data: { avaliadorId } }),
+    queryKey: ["painel", avaliadorId, nome],
+    queryFn: () => carregarPainel({ data: { avaliadorId, nome } }),
   });
 
-export const fichaQuery = (avaliadorId: string, trabalhoId: string) =>
+export const fichaQuery = (avaliadorId: string, trabalhoId: string, nome?: string) =>
   queryOptions({
-    queryKey: ["ficha", avaliadorId, trabalhoId],
-    queryFn: () => carregarFicha({ data: { avaliadorId, trabalhoId } }),
+    queryKey: ["ficha", avaliadorId, trabalhoId, nome],
+    queryFn: () => carregarFicha({ data: { avaliadorId, trabalhoId, nome } }),
   });

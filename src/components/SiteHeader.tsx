@@ -1,13 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { ShieldCheck } from "lucide-react";
-import ornamento from "@/assets/ornamento-jornada.png.asset.json";
 
 export function SiteHeader({ children }: { children?: React.ReactNode }) {
   return (
     <header className="brand-band">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3 sm:px-8">
         <Link to="/" className="flex items-center gap-3">
-          <img src={ornamento.url} alt="" className="h-9 w-auto opacity-95" />
+          <img src="/logo-jornada.png" alt="" className="h-9 w-9 object-contain mix-blend-screen opacity-95" />
           <span className="leading-tight">
             <span className="block font-display text-lg tracking-wide">IV Jornada de</span>
             <span className="-mt-1 block font-display text-xl italic">psicologia</span>
