@@ -9,7 +9,7 @@ import {
   type Avaliador,
   type Trabalho,
 } from "./avaliacao";
-import { adminClient, publicClient, verificarSenhaAdmin } from "./jornada.server";
+import { adminClient, verificarSenhaAdmin } from "./jornada.server";
 import { TRABALHOS_OFICIAIS, type TrabalhoOficial } from "./dados-oficiais";
 
 const TRAB_COLS = "id, codigo_trabalho, titulo, autor_principal, categoria, local_apresentacao";
@@ -79,7 +79,7 @@ export function mesclarTrabalhos(trabalhosDoBanco: Trabalho[]): Trabalho[] {
 
 export const listarAvaliadores = createServerFn({ method: "GET" }).handler(async (): Promise<Avaliador[]> => {
   try {
-    const { data } = await publicClient().from("avaliadores").select("id, nome").order("nome");
+    const { data } = await (await adminClient()).from("avaliadores").select("id, nome").order("nome");
     return data ?? [];
   } catch {
     return [];
@@ -92,7 +92,7 @@ export const identificarAvaliador = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }): Promise<Avaliador> => {
     const nomeLimpo = data.nome.trim();
-    const pub = publicClient();
+    const pub = await adminClient();
 
     try {
       const { data: existente } = await pub
@@ -125,7 +125,7 @@ export const carregarPainel = createServerFn({ method: "GET" })
     z.object({ avaliadorId: z.string().min(1), nome: z.string().optional() }).parse(d)
   )
   .handler(async ({ data }) => {
-    const pub = publicClient();
+    const pub = await adminClient();
     let avaliador: Avaliador | null = null;
 
     try {
@@ -193,7 +193,7 @@ export const carregarFicha = createServerFn({ method: "GET" })
       .parse(d)
   )
   .handler(async ({ data }) => {
-    const pub = publicClient();
+    const pub = await adminClient();
 
     let avaliador: Avaliador = {
       id: data.avaliadorId,

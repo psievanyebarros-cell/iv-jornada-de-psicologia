@@ -8,6 +8,13 @@
       "when": 1794805412883,
       "tag": "0000_create_avaliacao_jornada",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795002748847,
+      "tag": "0001_lock_avaliadores_trabalhos",
+      "breakpoints": true
     }
   ]
 }
