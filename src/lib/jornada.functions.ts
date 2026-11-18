@@ -77,18 +77,25 @@ export function mesclarTrabalhos(trabalhosDoBanco: Trabalho[]): Trabalho[] {
   return Array.from(mapa.values());
 }
 
-export const listarAvaliadores = createServerFn({ method: "GET" }).handler(async (): Promise<Avaliador[]> => {
-  try {
-    const { data } = await (await adminClient()).from("avaliadores").select("id, nome").order("nome");
-    return data ?? [];
-  } catch {
-    return [];
-  }
-});
+export const listarAvaliadores = createServerFn({ method: "GET" }).handler(
+  async (): Promise<Avaliador[]> => {
+    try {
+      const { data } = await (
+        await adminClient()
+      )
+        .from("avaliadores")
+        .select("id, nome")
+        .order("nome");
+      return data ?? [];
+    } catch {
+      return [];
+    }
+  },
+);
 
 export const identificarAvaliador = createServerFn({ method: "POST" })
   .validator((d: unknown) =>
-    z.object({ nome: z.string().trim().min(2, "Digite seu nome completo") }).parse(d)
+    z.object({ nome: z.string().trim().min(2, "Digite seu nome completo") }).parse(d),
   )
   .handler(async ({ data }): Promise<Avaliador> => {
     const nomeLimpo = data.nome.trim();
@@ -108,7 +115,11 @@ export const identificarAvaliador = createServerFn({ method: "POST" })
 
     try {
       const admin = await adminClient();
-      const ins = await admin.from("avaliadores").insert({ nome: nomeLimpo }).select("id, nome").maybeSingle();
+      const ins = await admin
+        .from("avaliadores")
+        .insert({ nome: nomeLimpo })
+        .select("id, nome")
+        .maybeSingle();
       if (ins?.data) return ins.data as Avaliador;
     } catch {
       // Ignora erro de permissão RLS local
@@ -122,14 +133,18 @@ export const identificarAvaliador = createServerFn({ method: "POST" })
 
 export const carregarPainel = createServerFn({ method: "GET" })
   .validator((d: unknown) =>
-    z.object({ avaliadorId: z.string().min(1), nome: z.string().optional() }).parse(d)
+    z.object({ avaliadorId: z.string().min(1), nome: z.string().optional() }).parse(d),
   )
   .handler(async ({ data }) => {
     const pub = await adminClient();
     let avaliador: Avaliador | null = null;
 
     try {
-      const av = await pub.from("avaliadores").select("id, nome").eq("id", data.avaliadorId).maybeSingle();
+      const av = await pub
+        .from("avaliadores")
+        .select("id, nome")
+        .eq("id", data.avaliadorId)
+        .maybeSingle();
       if (av.data) avaliador = av.data as Avaliador;
     } catch {
       // continua
@@ -190,7 +205,7 @@ export const carregarFicha = createServerFn({ method: "GET" })
         trabalhoId: z.string().min(1),
         nome: z.string().optional(),
       })
-      .parse(d)
+      .parse(d),
   )
   .handler(async ({ data }) => {
     const pub = await adminClient();
@@ -201,7 +216,11 @@ export const carregarFicha = createServerFn({ method: "GET" })
     };
 
     try {
-      const av = await pub.from("avaliadores").select("id, nome").eq("id", data.avaliadorId).maybeSingle();
+      const av = await pub
+        .from("avaliadores")
+        .select("id, nome")
+        .eq("id", data.avaliadorId)
+        .maybeSingle();
       if (av.data) avaliador = av.data as Avaliador;
     } catch {
       // continua
@@ -209,7 +228,11 @@ export const carregarFicha = createServerFn({ method: "GET" })
 
     let trabalho: Trabalho | undefined;
     try {
-      const tr = await pub.from("trabalhos").select(TRAB_COLS).eq("id", data.trabalhoId).maybeSingle();
+      const tr = await pub
+        .from("trabalhos")
+        .select(TRAB_COLS)
+        .eq("id", data.trabalhoId)
+        .maybeSingle();
       if (tr.data) {
         const codigo = tr.data.codigo_trabalho;
         const oficial = TRABALHOS_OFICIAIS.find((t) => t.codigo_trabalho === codigo);
@@ -229,7 +252,9 @@ export const carregarFicha = createServerFn({ method: "GET" })
 
     if (!trabalho) {
       const of = TRABALHOS_OFICIAIS.find(
-        (t) => t.id === data.trabalhoId || t.codigo_trabalho.toLowerCase() === data.trabalhoId.toLowerCase()
+        (t) =>
+          t.id === data.trabalhoId ||
+          t.codigo_trabalho.toLowerCase() === data.trabalhoId.toLowerCase(),
       );
       if (of) {
         trabalho = {
@@ -297,12 +322,14 @@ export const enviarAvaliacao = createServerFn({ method: "POST" })
     const observacoes = empacotarParecer(
       { c1, c2, c3, c4 },
       data.nomeAvaliador,
-      data.observacoes_parecer
+      data.observacoes_parecer,
     );
 
     let targetTrabalhoId = data.trabalhoId;
     const trOficial = TRABALHOS_OFICIAIS.find(
-      (t) => t.id === data.trabalhoId || t.codigo_trabalho.toLowerCase() === data.trabalhoId.toLowerCase()
+      (t) =>
+        t.id === data.trabalhoId ||
+        t.codigo_trabalho.toLowerCase() === data.trabalhoId.toLowerCase(),
     );
 
     if (trOficial) {
@@ -358,26 +385,21 @@ export const enviarAvaliacao = createServerFn({ method: "POST" })
       }
     }
 
-    try {
-      const { error } = await admin.from("avaliacoes").upsert(
-        {
-          avaliador_id: targetAvaliadorId,
-          trabalho_id: targetTrabalhoId,
-          nota_conteudo: c1,
-          nota_apresentacao: nota_apresentacao,
-          nota_dominio: c2,
-          observacoes_parecer: observacoes,
-          data_envio: new Date().toISOString(),
-        },
-        { onConflict: "avaliador_id,trabalho_id" }
-      );
+    const { error } = await admin.from("avaliacoes").upsert(
+      {
+        avaliador_id: targetAvaliadorId,
+        trabalho_id: targetTrabalhoId,
+        nota_conteudo: c1,
+        nota_apresentacao: nota_apresentacao,
+        nota_dominio: c2,
+        observacoes_parecer: observacoes,
+        data_envio: new Date().toISOString(),
+      },
+      { onConflict: "avaliador_id,trabalho_id" },
+    );
 
-      if (error) {
-        console.warn("Aviso ao persistir avaliação no banco:", error.message);
-      }
-    } catch (err) {
-      console.warn("Erro ao salvar avaliação no banco:", err);
-    }
+    // Nunca confirmar sucesso sem a nota gravada: o avaliador precisa saber para tentar de novo.
+    if (error) falha("Não foi possível salvar a avaliação. Tente enviar novamente.", error);
 
     return { ok: true, avaliadorId: targetAvaliadorId, trabalhoId: targetTrabalhoId };
   });
@@ -401,7 +423,11 @@ export const dadosAdmin = createServerFn({ method: "POST" })
     const [av, tr, ac] = await Promise.all([
       admin.from("avaliadores").select("id, nome").order("nome"),
       admin.from("trabalhos").select(TRAB_COLS).order("codigo_trabalho"),
-      admin.from("avaliacoes").select(AVAL_COLS).order("data_envio", { ascending: false }).limit(5000),
+      admin
+        .from("avaliacoes")
+        .select(AVAL_COLS)
+        .order("data_envio", { ascending: false })
+        .limit(5000),
     ]);
 
     const trabalhosDb = (tr.data ?? []) as Trabalho[];
@@ -421,7 +447,9 @@ export const dadosAdmin = createServerFn({ method: "POST" })
 
 export const adicionarAvaliador = createServerFn({ method: "POST" })
   .validator((d: unknown) =>
-    z.object({ senha, nome: z.string().trim().min(3, "Informe o nome completo").max(150) }).parse(d)
+    z
+      .object({ senha, nome: z.string().trim().min(3, "Informe o nome completo").max(150) })
+      .parse(d),
   )
   .handler(async ({ data }) => {
     verificarSenhaAdmin(data.senha);
@@ -429,8 +457,10 @@ export const adicionarAvaliador = createServerFn({ method: "POST" })
     const { error } = await admin.from("avaliadores").insert({ nome: data.nome });
     if (error)
       falha(
-        error.code === "23505" ? "Esse avaliador já está cadastrado." : "Não foi possível cadastrar.",
-        error
+        error.code === "23505"
+          ? "Esse avaliador já está cadastrado."
+          : "Não foi possível cadastrar.",
+        error,
       );
     return { ok: true };
   });
@@ -446,7 +476,7 @@ export const adicionarTrabalho = createServerFn({ method: "POST" })
         categoria: z.enum(CATEGORIAS),
         local_apresentacao: z.string().trim().min(2).max(100),
       })
-      .parse(d)
+      .parse(d),
   )
   .handler(async ({ data }) => {
     verificarSenhaAdmin(data.senha);
@@ -457,15 +487,19 @@ export const adicionarTrabalho = createServerFn({ method: "POST" })
       .insert({ ...row, codigo_trabalho: row.codigo_trabalho.toUpperCase() });
     if (error)
       falha(
-        error.code === "23505" ? "Já existe um trabalho com esse código." : "Não foi possível cadastrar.",
-        error
+        error.code === "23505"
+          ? "Já existe um trabalho com esse código."
+          : "Não foi possível cadastrar.",
+        error,
       );
     return { ok: true };
   });
 
 export const removerRegistro = createServerFn({ method: "POST" })
   .validator((d: unknown) =>
-    z.object({ senha, tabela: z.enum(["avaliadores", "trabalhos", "avaliacoes"]), id: z.string() }).parse(d)
+    z
+      .object({ senha, tabela: z.enum(["avaliadores", "trabalhos", "avaliacoes"]), id: z.string() })
+      .parse(d),
   )
   .handler(async ({ data }) => {
     verificarSenhaAdmin(data.senha);
@@ -488,7 +522,7 @@ export const atualizarAvaliacaoAdmin = createServerFn({ method: "POST" })
         nomeAvaliador: z.string().optional(),
         observacoes_parecer: z.string().optional(),
       })
-      .parse(d)
+      .parse(d),
   )
   .handler(async ({ data }) => {
     verificarSenhaAdmin(data.senha);
@@ -503,7 +537,7 @@ export const atualizarAvaliacaoAdmin = createServerFn({ method: "POST" })
     const observacoes = empacotarParecer(
       { c1, c2, c3, c4 },
       data.nomeAvaliador,
-      data.observacoes_parecer
+      data.observacoes_parecer,
     );
 
     const { error } = await admin
