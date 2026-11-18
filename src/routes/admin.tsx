@@ -161,23 +161,7 @@ function Login({ onOk }: { onOk: (s: string) => void }) {
           <Lock className="size-5" />
         </div>
         <h1 className="mt-4 font-display text-2xl">Área administrativa</h1>
-        <p className="text-sm text-muted-foreground">Acesso para monitores e comissão organizadora.</p>
-
-        <div className="mt-5 rounded-2xl border border-primary/25 bg-primary-soft/60 p-3.5 text-xs">
-          <div className="flex items-center justify-between">
-            <span className="font-medium text-foreground">Senha dos monitores:</span>
-            <code className="rounded bg-background px-2 py-0.5 font-mono text-sm font-bold text-primary shadow-xs">
-              IVJOPSI
-            </code>
-          </div>
-          <button
-            type="button"
-            onClick={() => setValor("IVJOPSI")}
-            className="mt-2 block font-medium text-primary hover:underline"
-          >
-            → Preencher automaticamente com IVJOPSI
-          </button>
-        </div>
+        <p className="text-sm text-muted-foreground">Acesso restrito à comissão organizadora e monitores.</p>
 
         <label htmlFor="senha" className="mt-6 block text-sm font-medium">
           Senha de acesso
@@ -186,7 +170,7 @@ function Login({ onOk }: { onOk: (s: string) => void }) {
           id="senha"
           type="password"
           value={valor}
-          placeholder="Digite a senha (ex: IVJOPSI)"
+          placeholder="Digite a senha de acesso"
           onChange={(e) => setValor(e.target.value)}
           className="mt-2 h-11 rounded-xl"
           autoFocus
