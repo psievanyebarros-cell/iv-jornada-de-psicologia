@@ -211,7 +211,8 @@ export const carregarFicha = createServerFn({ method: "GET" })
     try {
       const tr = await pub.from("trabalhos").select(TRAB_COLS).eq("id", data.trabalhoId).maybeSingle();
       if (tr.data) {
-        const oficial = TRABALHOS_OFICIAIS.find((t) => t.codigo_trabalho === tr.data.codigo_trabalho);
+        const codigo = tr.data.codigo_trabalho;
+        const oficial = TRABALHOS_OFICIAIS.find((t) => t.codigo_trabalho === codigo);
         trabalho = {
           ...(tr.data as Trabalho),
           grupo_numero: oficial?.grupo_numero,
