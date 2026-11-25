@@ -135,12 +135,13 @@ function Admin() {
 
 function Login({ onOk }: { onOk: (s: string) => void }) {
   const entrar = useServerFn(entrarAdmin);
-  const [valor, setValor] = useState("");
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState("");
 
-  async function submeter(e: React.FormEvent) {
+  async function submeter(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (carregando) return;
+    const valor = String(new FormData(e.currentTarget).get("senha") ?? "");
     if (!valor) return;
     setCarregando(true);
     setErro("");
@@ -168,15 +169,16 @@ function Login({ onOk }: { onOk: (s: string) => void }) {
         </label>
         <Input
           id="senha"
+          name="senha"
           type="password"
-          value={valor}
+          required
+          autoComplete="current-password"
           placeholder="Digite a senha de acesso"
-          onChange={(e) => setValor(e.target.value)}
           className="mt-2 h-11 rounded-xl"
           autoFocus
         />
         {erro && <p className="mt-2 text-sm text-destructive">{erro}</p>}
-        <Button type="submit" className="mt-6 h-11 w-full rounded-xl" disabled={carregando || !valor}>
+        <Button type="submit" className="mt-6 h-11 w-full rounded-xl" disabled={carregando}>
           {carregando && <Loader2 className="size-4 animate-spin" />} Entrar
         </Button>
       </form>

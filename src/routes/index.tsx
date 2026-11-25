@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, ClipboardCheck, Loader2, ShieldCheck, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,19 +32,20 @@ const KEY_NOME = "jornada:avaliador-nome";
 const KEY_ID = "jornada:avaliador-id";
 
 function Inicio() {
-  const [nome, setNome] = useState("");
+  const nomeInput = useRef<HTMLInputElement>(null);
   const [carregando, setCarregando] = useState(false);
   const navigate = useNavigate();
   const identificar = useServerFn(identificarAvaliador);
 
   useEffect(() => {
     const salvo = localStorage.getItem(KEY_NOME);
-    if (salvo) setNome(salvo);
+    if (salvo && nomeInput.current && !nomeInput.current.value) nomeInput.current.value = salvo;
   }, []);
 
-  async function entrar(e: React.FormEvent) {
+  async function entrar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const nomeLimpo = nome.trim();
+    if (carregando) return;
+    const nomeLimpo = String(new FormData(e.currentTarget).get("nome") ?? "").trim();
     if (nomeLimpo.length < 3) {
       toast.error("Por favor, digite o seu nome completo para continuar.");
       return;
@@ -122,10 +123,12 @@ function Inicio() {
                 <User className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   id="nome"
+                  name="nome"
+                  ref={nomeInput}
                   type="text"
                   required
-                  value={nome}
-                  onChange={(e) => setNome(e.target.value)}
+                  minLength={3}
+                  autoComplete="name"
                   placeholder="Ex.: Profa. Dra. Maria Silva ou Prof. João Pedro"
                   className="h-12 rounded-xl pl-10 text-base"
                   autoFocus
@@ -137,7 +140,7 @@ function Inicio() {
               type="submit"
               size="lg"
               className="mt-6 h-12 w-full rounded-xl text-base"
-              disabled={carregando || nome.trim().length < 3}
+              disabled={carregando}
             >
               {carregando ? (
                 <>

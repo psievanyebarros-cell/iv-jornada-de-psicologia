@@ -34,3 +34,4 @@ use the editor.
 - All database access goes through `createServerFn` in `src/lib/jornada.functions.ts`; `avaliacoes` has no client RLS policies, so only server code (service role) reads/writes it — keeps scores private while evaluators have no login.
 - Admin server functions verify a shared password from the `ADMIN_PASSWORD` secret on every call — the event has no user accounts.
 - Score rules and CSV building live as pure functions in `src/lib/avaliacao.ts` with tests next to them — so rules stay testable without the backend.
+- Access forms read named fields through FormData on submit and disable submission only while pending; browser autofill may not emit React change events.
