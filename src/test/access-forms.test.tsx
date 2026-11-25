@@ -32,12 +32,43 @@ function autofill(input: HTMLElement, value: string) {
 
 afterEach(() => {
   cleanup();
+  vi.restoreAllMocks();
   localStorage.clear();
   sessionStorage.clear();
   vi.clearAllMocks();
 });
 
 describe("Access forms with browser autofill", () => {
+  it("continues to the evaluator panel when the browser blocks reading and saving remembered names", async () => {
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new DOMException("Storage blocked", "SecurityError");
+    });
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("Storage blocked", "SecurityError");
+    });
+    mocks.identificar.mockResolvedValue({ id: "avaliador-teste", nome: "Maria Silva" });
+    const Inicio = InicioRoute.options.component as ComponentType;
+    render(<Inicio />);
+    fireEvent.change(screen.getByLabelText("Digite seu Nome Completo"), { target: { value: "Maria Silva" } });
+    fireEvent.click(screen.getByRole("button", { name: /Acessar Painel/ }));
+    await waitFor(() => expect(mocks.navigate).toHaveBeenCalledWith({
+      to: "/avaliador/$avaliadorId", params: { avaliadorId: "avaliador-teste" },
+    }));
+  });
+
+  it("opens admin access and verifies the password even when session storage is blocked", async () => {
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new DOMException("Storage blocked", "SecurityError");
+    });
+    mocks.entrar.mockRejectedValue(new Error("Senha incorreta."));
+    const Admin = AdminRoute.options.component as ComponentType;
+    render(<Admin />);
+    fireEvent.change(screen.getByLabelText("Senha de acesso"), { target: { value: "senha-de-teste" } });
+    fireEvent.click(screen.getByRole("button", { name: "Entrar" }));
+    await waitFor(() => expect(mocks.entrar).toHaveBeenCalledWith({ data: { senha: "senha-de-teste" } }));
+    await screen.findByText("Senha incorreta.");
+  });
+
   it("submits the actual evaluator name even without a change event", async () => {
     mocks.identificar.mockResolvedValue({ id: "avaliador-teste", nome: "Maria Silva" });
     const Inicio = InicioRoute.options.component as ComponentType;

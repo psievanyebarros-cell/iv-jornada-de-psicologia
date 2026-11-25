@@ -1,0 +1,3 @@
+- [x] Impedir erros quando o navegador bloqueia dados locais em todos os acessos e telas de avaliação.
+- [x] Remover a espera por sessão de conta, que não é usada neste evento.
+- [x] Verificar os acessos reais com armazenamento bloqueado e executar os testes.

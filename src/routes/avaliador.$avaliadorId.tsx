@@ -25,6 +25,7 @@ import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import { CategoriaBadge, SiteHeader } from "@/components/SiteHeader";
 import { painelQuery } from "@/lib/queries";
+import { lerPreferencia } from "@/lib/browser-storage";
 import { GRUPOS_TEMATICOS, SALAS_EXPANDIDOS, DATAS_EXPANDIDOS } from "@/lib/dados-oficiais";
 
 export const Route = createFileRoute("/avaliador/$avaliadorId")({
@@ -68,7 +69,7 @@ function Painel() {
   const [nomeSalvo, setNomeSalvo] = useState<string>("");
 
   useEffect(() => {
-    const salvo = localStorage.getItem("jornada:avaliador-nome");
+    const salvo = lerPreferencia("localStorage", "jornada:avaliador-nome");
     if (salvo) setNomeSalvo(salvo);
   }, []);
 

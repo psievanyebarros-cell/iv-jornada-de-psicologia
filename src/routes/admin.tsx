@@ -24,6 +24,7 @@ import {
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { lerPreferencia, salvarPreferencia } from "@/lib/browser-storage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -93,7 +94,7 @@ function baixar(nome: string, conteudo: string) {
 function Admin() {
   const [senha, setSenha] = useState<string | null>(null);
   useEffect(() => {
-    setSenha(sessionStorage.getItem(CHAVE));
+    setSenha(lerPreferencia("sessionStorage", CHAVE));
   }, []);
 
   return (
@@ -105,7 +106,7 @@ function Admin() {
             variant="ghost"
             className="rounded-full text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
             onClick={() => {
-              sessionStorage.removeItem(CHAVE);
+              salvarPreferencia("sessionStorage", CHAVE, null);
               setSenha(null);
             }}
           >
@@ -117,14 +118,14 @@ function Admin() {
         <Painel
           senha={senha}
           onInvalida={() => {
-            sessionStorage.removeItem(CHAVE);
+            salvarPreferencia("sessionStorage", CHAVE, null);
             setSenha(null);
           }}
         />
       ) : (
         <Login
           onOk={(s) => {
-            sessionStorage.setItem(CHAVE, s);
+            salvarPreferencia("sessionStorage", CHAVE, s);
             setSenha(s);
           }}
         />

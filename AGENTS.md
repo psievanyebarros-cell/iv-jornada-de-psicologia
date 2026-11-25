@@ -35,3 +35,5 @@ use the editor.
 - Admin server functions verify a shared password from the `ADMIN_PASSWORD` secret on every call — the event has no user accounts.
 - Score rules and CSV building live as pure functions in `src/lib/avaliacao.ts` with tests next to them — so rules stay testable without the backend.
 - Access forms read named fields through FormData on submit and disable submission only while pending; browser autofill may not emit React change events.
+- Browser persistence uses the guarded browser-storage helper; blocked or full storage must not prevent access, navigation, or evaluation rendering.
+- Do not attach account-session middleware to server calls while this app has no account-authenticated handlers; it unnecessarily waits on embedded-preview session storage, while admin password checks and CSRF remain required.

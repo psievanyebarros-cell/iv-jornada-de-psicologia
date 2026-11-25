@@ -31,6 +31,7 @@ import {
 } from "@/lib/avaliacao";
 import { enviarAvaliacao } from "@/lib/jornada.functions";
 import { fichaQuery } from "@/lib/queries";
+import { lerPreferencia } from "@/lib/browser-storage";
 
 export const Route = createFileRoute("/avaliar/$avaliadorId/$trabalhoId")({
   head: () => ({
@@ -75,7 +76,7 @@ function Ficha() {
   const [nomeSalvo, setNomeSalvo] = useState<string>("");
 
   useEffect(() => {
-    const salvo = localStorage.getItem("jornada:avaliador-nome");
+    const salvo = lerPreferencia("localStorage", "jornada:avaliador-nome");
     if (salvo) setNomeSalvo(salvo);
   }, []);
 

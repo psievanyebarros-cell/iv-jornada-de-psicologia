@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useServerFn } from "@tanstack/react-start";
 import { identificarAvaliador } from "@/lib/jornada.functions";
 import { toast } from "sonner";
+import { lerPreferencia, salvarPreferencia } from "@/lib/browser-storage";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -38,7 +39,7 @@ function Inicio() {
   const identificar = useServerFn(identificarAvaliador);
 
   useEffect(() => {
-    const salvo = localStorage.getItem(KEY_NOME);
+    const salvo = lerPreferencia("localStorage", KEY_NOME);
     if (salvo && nomeInput.current && !nomeInput.current.value) nomeInput.current.value = salvo;
   }, []);
 
@@ -54,8 +55,8 @@ function Inicio() {
     setCarregando(true);
     try {
       const res = await identificar({ data: { nome: nomeLimpo } });
-      localStorage.setItem(KEY_NOME, nomeLimpo);
-      localStorage.setItem(KEY_ID, res.id);
+      salvarPreferencia("localStorage", KEY_NOME, nomeLimpo);
+      salvarPreferencia("localStorage", KEY_ID, res.id);
 
       navigate({
         to: "/avaliador/$avaliadorId",
